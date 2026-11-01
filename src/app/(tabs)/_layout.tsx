@@ -26,24 +26,34 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: appColors.surface,
           borderTopColor: appColors.border,
-          height: 64 + insets.bottom,
-          paddingTop: 6,
-          paddingBottom: insets.bottom > 0 ? insets.bottom : 6,
+          borderTopWidth: 1,
+          height: 60 + insets.bottom,
+          paddingTop: 8,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
         },
         sceneStyle: { backgroundColor: appColors.bg },
       }}
     >
       <Tabs.Screen
         name="index"
-        options={{ title: "Dashboard", tabBarIcon: icon("grid-outline") }}
+        options={{
+          title: "Dashboard",
+          tabBarIcon: icon("grid-outline"),
+        }}
       />
       <Tabs.Screen
         name="create"
-        options={{ title: "Create", tabBarIcon: icon("add-circle-outline") }}
+        options={{
+          title: "Create",
+          tabBarIcon: icon("duplicate-outline"),
+        }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: "Profile", tabBarIcon: icon("person-outline") }}
+        options={{
+          title: "Profile",
+          tabBarIcon: icon("id-card-outline"),
+        }}
       />
     </Tabs>
   );

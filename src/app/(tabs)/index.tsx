@@ -2,7 +2,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { HabitCard } from "@/components/HabitCard";
 import { ProgressRing } from "@/components/ProgressRing";
 import AppText from "@/components/ui/AppText";
-import { spacing } from "@/constants/theme";
+import { radius, spacing } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
 import { useHabitStore } from "@/store/useHabitStore";
 import { overallProgress } from "@/utils/progress";
@@ -39,22 +39,31 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.bg }]}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.headerRow}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={[styles.headerCard, { backgroundColor: colors.surface }]}>
           <View>
-            <AppText size={14} color={colors.muted} weight="medium">
+            <AppText
+              size={14}
+              color={colors.muted}
+              weight="medium"
+              style={styles.welcomeText}
+            >
               Welcome back
             </AppText>
-            <AppText size={28} weight="bold">
+            <AppText
+              size={30}
+              weight="bold"
+              color={colors.text}
+              style={styles.userNameText}
+            >
               {userName || "Your habits"}
             </AppText>
           </View>
 
-          <ProgressRing
-            progress={overallProgress(habits)}
-            size={78}
-            label="goals"
-          />
+          <ProgressRing progress={overallProgress(habits)} size={52} />
         </View>
 
         {habits.length === 0 ? (
@@ -84,14 +93,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    padding: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 32,
   },
-  headerRow: {
+  headerCard: {
+    borderRadius: radius.xl,
+    padding: spacing.lg,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  welcomeText: {
+    marginBottom: 4,
+  },
+  userNameText: {
+    letterSpacing: -0.5,
   },
   cardsList: {
     gap: spacing.md,

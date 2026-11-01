@@ -1,4 +1,5 @@
 import AppText from "@/components/ui/AppText";
+import { radius, spacing } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
 import { StyleSheet, View } from "react-native";
 
@@ -14,13 +15,16 @@ export function EmptyState({ title, message }: EmptyStateProps) {
     <View
       style={[
         styles.container,
-        { backgroundColor: colors.surface, borderColor: colors.border },
+        {
+          backgroundColor: colors.surface,
+          shadowColor: "#000",
+        },
       ]}
     >
-      <AppText size={22} weight="bold" style={styles.title}>
+      <AppText size={20} weight="bold" color={colors.text} style={styles.title}>
         {title}
       </AppText>
-      <AppText color={colors.muted} style={styles.message}>
+      <AppText size={14} color={colors.muted} style={styles.message}>
         {message}
       </AppText>
     </View>
@@ -29,15 +33,20 @@ export function EmptyState({ title, message }: EmptyStateProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
-    borderRadius: 18,
-    borderWidth: 1,
+    padding: spacing.xl,
+    borderRadius: radius.xl,
     alignItems: "center",
+    justifyContent: "center",
+    shadowOpacity: 0.03,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   title: {
     marginBottom: 8,
   },
   message: {
     textAlign: "center",
+    lineHeight: 20,
   },
 });
