@@ -12,9 +12,9 @@ export const lightColors = {
   success: "#10B981",
   blockActive: "#18181B",
   blockInactive: "#E4E4E7",
-  badgeBg: "#1C1C1E",
-  badgeTrack: "#2E3033",
-  badgeIndicator: "#FFFFFF",
+  badgeBg: "#18181B",
+  badgeTrack: "#E4E4E7",
+  badgeIndicator: "#18181B",
   badgeText: "#FFFFFF",
 };
 

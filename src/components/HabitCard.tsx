@@ -39,7 +39,12 @@ export function HabitCard({ habit, onToggleDay, onDelete }: HabitCardProps) {
           <AppText size={20} weight="bold" color={colors.text}>
             {habit.name}
           </AppText>
-          <AppText size={13} color={colors.muted} weight="medium" style={styles.subTitle}>
+          <AppText
+            size={13}
+            color={colors.muted}
+            weight="medium"
+            style={styles.subTitle}
+          >
             {habit.completedDays.length}/{habit.totalDays} Days
           </AppText>
         </View>
@@ -49,7 +54,10 @@ export function HabitCard({ habit, onToggleDay, onDelete }: HabitCardProps) {
           onPress={handleMenuPress}
           accessibilityRole="button"
           accessibilityLabel={`Options for ${habit.name}`}
-          style={({ pressed }) => [styles.menuButton, pressed && styles.menuButtonPressed]}
+          style={({ pressed }) => [
+            styles.menuButton,
+            pressed && styles.menuButtonPressed,
+          ]}
         >
           <Ionicons name="ellipsis-vertical" size={18} color={colors.muted} />
         </Pressable>
@@ -69,15 +77,12 @@ export function HabitCard({ habit, onToggleDay, onDelete }: HabitCardProps) {
   );
 }
 
+export default HabitCard;
+
 const styles = StyleSheet.create({
   card: {
     borderRadius: radius.xl,
     padding: spacing.lg,
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
   },
   headerRow: {
     flexDirection: "row",

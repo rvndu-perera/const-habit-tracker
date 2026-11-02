@@ -12,8 +12,8 @@ type ProgressRingProps = {
 
 export function ProgressRing({
   progress,
-  size = 52,
-  strokeWidth = 3,
+  size = 54,
+  strokeWidth = 3.5,
   label,
 }: ProgressRingProps) {
   const colors = useAppColors();
@@ -21,21 +21,13 @@ export function ProgressRing({
   const circumference = radius * 2 * Math.PI;
   const clamped = Math.min(100, Math.max(0, progress));
   const offset = circumference - (clamped / 100) * circumference;
+  const innerSize = size - strokeWidth * 2 - 4;
 
   return (
     <View style={styles.wrapper}>
-      <View
-        style={[
-          styles.container,
-          {
-            width: size,
-            height: size,
-            borderRadius: size / 2,
-            backgroundColor: colors.badgeBg,
-          },
-        ]}
-      >
+      <View style={[styles.container, { width: size, height: size }]}>
         <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {/* Visible light-grey circular track */}
           <Circle
             stroke={colors.badgeTrack}
             fill="transparent"
@@ -44,6 +36,7 @@ export function ProgressRing({
             cy={size / 2}
             r={radius}
           />
+          {/* Distinct dark progress indicator arc */}
           {clamped > 0 ? (
             <Circle
               stroke={colors.badgeIndicator}
@@ -59,10 +52,22 @@ export function ProgressRing({
             />
           ) : null}
         </Svg>
-        <View style={styles.centerBadge} pointerEvents="none">
+        {/* Dark inner circle badge with bold white percentage */}
+        <View
+          style={[
+            styles.innerCircle,
+            {
+              width: innerSize,
+              height: innerSize,
+              borderRadius: innerSize / 2,
+              backgroundColor: colors.badgeBg,
+            },
+          ]}
+          pointerEvents="none"
+        >
           <AppText
             weight="bold"
-            size={size <= 56 ? 12 : 16}
+            size={12}
             color={colors.badgeText}
             style={styles.percentText}
           >
@@ -79,6 +84,8 @@ export function ProgressRing({
   );
 }
 
+export default ProgressRing;
+
 const styles = StyleSheet.create({
   wrapper: {
     alignItems: "center",
@@ -87,14 +94,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
+    position: "relative",
   },
-  centerBadge: {
+  innerCircle: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
   },

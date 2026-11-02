@@ -38,11 +38,12 @@ export default function DashboardScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.bg }]}>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
-      >
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: colors.bg }]}
+      edges={["top", "left", "right"]}
+    >
+      {/* Sticky Header Card with floating soft shadow */}
+      <View style={styles.headerWrapper}>
         <View style={[styles.headerCard, { backgroundColor: colors.surface }]}>
           <View>
             <AppText
@@ -65,7 +66,14 @@ export default function DashboardScreen() {
 
           <ProgressRing progress={overallProgress(habits)} size={52} />
         </View>
+      </View>
 
+      {/* Scrollable Habit Cards */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {habits.length === 0 ? (
           <EmptyState
             title="No habits yet"
@@ -92,10 +100,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  container: {
+  headerWrapper: {
     paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 32,
+    paddingTop: 8,
+    paddingBottom: 8,
+    zIndex: 10,
   },
   headerCard: {
     borderRadius: radius.xl,
@@ -103,18 +112,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.md,
     shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 6,
   },
   welcomeText: {
     marginBottom: 4,
   },
   userNameText: {
     letterSpacing: -0.5,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 32,
   },
   cardsList: {
     gap: spacing.md,

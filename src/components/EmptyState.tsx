@@ -17,7 +17,6 @@ export function EmptyState({ title, message }: EmptyStateProps) {
         styles.container,
         {
           backgroundColor: colors.surface,
-          shadowColor: "#000",
         },
       ]}
     >
@@ -31,16 +30,14 @@ export function EmptyState({ title, message }: EmptyStateProps) {
   );
 }
 
+export default EmptyState;
+
 const styles = StyleSheet.create({
   container: {
     padding: spacing.xl,
     borderRadius: radius.xl,
     alignItems: "center",
     justifyContent: "center",
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
   },
   title: {
     marginBottom: 8,
