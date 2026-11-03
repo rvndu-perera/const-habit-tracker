@@ -1,20 +1,19 @@
 import AppText from "@/components/ui/AppText";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { radius, spacing } from "@/constants/theme";
+import { radius } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
 import { useHabitStore } from "@/store/useHabitStore";
 import { DURATIONS, TotalDays } from "@/types/habit";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    View,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -28,7 +27,6 @@ export default function CreateHabitScreen() {
   const canSave = name.trim().length > 0;
 
   const handleSave = () => {
-    // Trim here as well as in the disabled state so whitespace cannot create a habit.
     const habitName = name.trim();
     if (!habitName) return;
 
@@ -43,6 +41,27 @@ export default function CreateHabitScreen() {
       style={[styles.safeArea, { backgroundColor: colors.bg }]}
       edges={["top", "left", "right"]}
     >
+      {/* Sticky header card */}
+      <View style={styles.headerWrapper}>
+        <View
+          style={[
+            styles.headerCard,
+            { backgroundColor: colors.surface },
+          ]}
+        >
+          <AppText size={13} weight="semibold" color={colors.muted}>
+            BUILD A ROUTINE
+          </AppText>
+          <AppText size={28} weight="bold" color={colors.text}>
+            Start a habit
+          </AppText>
+          <AppText size={14} color={colors.muted}>
+            Choose one thing you want to make time for.
+          </AppText>
+        </View>
+      </View>
+
+      {/* Keyboard avoiding + scrollable body */}
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -51,18 +70,7 @@ export default function CreateHabitScreen() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.heading}>
-            <AppText size={13} weight="semibold" color={colors.primary}>
-              BUILD A ROUTINE
-            </AppText>
-            <AppText size={30} weight="bold" style={styles.title}>
-              Start a habit
-            </AppText>
-            <AppText color={colors.muted}>
-              Choose one thing you want to make time for.
-            </AppText>
-          </View>
-
+          {/* Habit name */}
           <View style={styles.field}>
             <AppText size={14} weight="semibold" style={styles.label}>
               Habit name
@@ -83,9 +91,10 @@ export default function CreateHabitScreen() {
             </AppText>
           </View>
 
+          {/* Focus period */}
           <View style={styles.durationSection}>
             <View style={styles.durationHeading}>
-              <AppText size={14} weight="semibold">
+              <AppText size={14} weight="semibold" color={colors.text}>
                 Focus period
               </AppText>
               <AppText size={13} color={colors.muted}>
@@ -93,53 +102,52 @@ export default function CreateHabitScreen() {
               </AppText>
             </View>
 
-            <View style={styles.durationGrid}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.durationScroll}
+              contentContainerStyle={styles.durationScrollContent}
+            >
               {DURATIONS.map((days) => {
                 const selected = duration === days;
-
                 return (
                   <Pressable
                     key={days}
+                    onPress={() => setDuration(days)}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: selected }}
                     accessibilityLabel={`${days} days`}
-                    onPress={() => setDuration(days)}
-                    style={({ pressed }) => [
-                      styles.durationOption,
+                    style={[
+                      styles.durationChip,
                       {
                         backgroundColor: selected
-                          ? colors.primarySoft
+                          ? colors.primary
                           : colors.surface,
                         borderColor: selected ? colors.primary : colors.border,
                       },
-                      pressed && styles.durationOptionPressed,
                     ]}
                   >
-                    <View style={styles.optionTopRow}>
-                      <AppText
-                        size={22}
-                        weight="bold"
-                        color={selected ? colors.primary : colors.text}
-                      >
-                        {days}
-                      </AppText>
-                      {selected ? (
-                        <Ionicons
-                          name="checkmark-circle"
-                          size={18}
-                          color={colors.primary}
-                        />
-                      ) : null}
-                    </View>
-                    <AppText size={12} color={colors.muted}>
+                    <AppText
+                      size={15}
+                      weight="bold"
+                      color={selected ? colors.primaryContrast : colors.text}
+                    >
+                      {days}
+                    </AppText>
+                    <AppText
+                      size={11}
+                      weight="medium"
+                      color={selected ? colors.primaryContrast : colors.muted}
+                    >
                       days
                     </AppText>
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
           </View>
 
+          {/* Save button */}
           <View style={styles.saveSection}>
             <Button
               title="Create habit"
@@ -161,24 +169,36 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+  // Header card (sticky, outside ScrollView)
+  headerWrapper: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  headerCard: {
+    borderRadius: radius.xl,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 6,
+    gap: 4,
+  },
+  // ScrollView content
   content: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
     flexGrow: 1,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.lg,
   },
-  heading: {
-    marginBottom: spacing.xl,
-  },
-  title: {
-    marginTop: spacing.xs,
-    marginBottom: spacing.xs,
-  },
+  // Habit name field
   field: {
-    marginBottom: spacing.xl,
+    marginBottom: 24,
   },
   label: {
-    marginBottom: spacing.sm,
+    marginBottom: 8,
   },
   input: {
     marginBottom: 0,
@@ -186,40 +206,35 @@ const styles = StyleSheet.create({
   },
   counter: {
     alignSelf: "flex-end",
-    marginTop: spacing.xs,
+    marginTop: 4,
   },
+  // Duration section
   durationSection: {
-    marginBottom: spacing.xl,
+    marginBottom: 24,
   },
   durationHeading: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.md,
+    marginBottom: 12,
   },
-  durationGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    rowGap: spacing.sm,
+  durationScroll: {
+    marginHorizontal: -16,
   },
-  durationOption: {
-    width: "31.5%",
-    minHeight: 82,
-    padding: spacing.sm,
+  durationScrollContent: {
+    paddingHorizontal: 16,
+    gap: 10,
+  },
+  durationChip: {
+    width: 72,
+    height: 80,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderRadius: radius.md,
-    justifyContent: "center",
-  },
-  durationOptionPressed: {
-    opacity: 0.75,
-  },
-  optionTopRow: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: spacing.xs,
+    justifyContent: "center",
+    gap: 2,
   },
+  // Save button
   saveSection: {
     marginTop: "auto",
   },

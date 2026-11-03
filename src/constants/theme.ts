@@ -8,6 +8,7 @@ export const lightColors = {
   muted: "#71717A",
   border: "#E4E4E7",
   primary: "#18181B",
+  primaryContrast: "#FFFFFF",   // text/icons drawn ON a primary-coloured bg
   primarySoft: "#E4E4E7",
   success: "#10B981",
   blockActive: "#18181B",
@@ -24,8 +25,9 @@ export const darkColors = {
   surfaceSecondary: "#27272A",
   text: "#F4F4F5",
   muted: "#A1A1AA",
-  border: "#27272A",
+  border: "#3F3F46",
   primary: "#F4F4F5",
+  primaryContrast: "#09090B",   // dark text/icons ON light primary bg in dark mode
   primarySoft: "#27272A",
   success: "#10B981",
   blockActive: "#F4F4F5",

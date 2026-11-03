@@ -12,7 +12,7 @@ export function Input(props: TextInputProps) {
       style={[
         styles.input,
         {
-          backgroundColor: colors.bg,
+          backgroundColor: colors.surface,
           borderColor: colors.border,
           color: colors.text,
         },

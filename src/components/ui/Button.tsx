@@ -16,23 +16,26 @@ export function Button({
   ...props
 }: ButtonProps) {
   const colors = useAppColors();
+
   const buttonStyle = [
     styles.button,
     {
       backgroundColor:
-        variant === "primary" ? colors.primary : colors.primarySoft,
+        variant === "primary" ? colors.primary : colors.surfaceSecondary,
     },
     disabled && styles.disabled,
     style,
   ].filter(Boolean) as ViewStyle[];
 
+  // Text colour must always contrast with the button background.
+  // primary bg flips between dark (light mode) and light (dark mode),
+  // so use primaryContrast which is always the inverse.
+  const textColor =
+    variant === "primary" ? colors.primaryContrast : colors.text;
+
   return (
     <Pressable style={buttonStyle} disabled={disabled} {...props}>
-      <AppText
-        weight="semibold"
-        size={16}
-        color={variant === "primary" ? "#fff" : colors.text}
-      >
+      <AppText weight="semibold" size={16} color={textColor}>
         {title}
       </AppText>
     </Pressable>
@@ -43,11 +46,11 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: radius.md,
-    minHeight: 50,
+    borderRadius: radius.lg,
+    minHeight: 54,
     paddingHorizontal: spacing.lg,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: 0.45,
   },
 });
