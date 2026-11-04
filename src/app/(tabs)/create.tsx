@@ -41,9 +41,9 @@ export default function CreateHabitScreen() {
       style={[styles.safeArea, { backgroundColor: colors.bg }]}
       edges={["top", "left", "right"]}
     >
-      {/* Sticky header card */}
+      {/* Header */}
       <View style={styles.headerWrapper}>
-        <View style={[styles.headerCard, { backgroundColor: colors.surface }]}>
+        <View style={styles.headerText}>
           <AppText size={13} weight="semibold" color={colors.muted}>
             BUILD A ROUTINE
           </AppText>
@@ -170,21 +170,13 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  // Header card (sticky, outside ScrollView)
+  // Header stays outside the scrollable form.
   headerWrapper: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 16,
     paddingBottom: 8,
   },
-  headerCard: {
-    borderRadius: radius.xl,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    elevation: 6,
+  headerText: {
     gap: 4,
   },
   // ScrollView content
