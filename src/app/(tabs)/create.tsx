@@ -43,12 +43,7 @@ export default function CreateHabitScreen() {
     >
       {/* Sticky header card */}
       <View style={styles.headerWrapper}>
-        <View
-          style={[
-            styles.headerCard,
-            { backgroundColor: colors.surface },
-          ]}
-        >
+        <View style={[styles.headerCard, { backgroundColor: colors.surface }]}>
           <AppText size={13} weight="semibold" color={colors.muted}>
             BUILD A ROUTINE
           </AppText>
@@ -102,49 +97,55 @@ export default function CreateHabitScreen() {
               </AppText>
             </View>
 
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.durationScroll}
-              contentContainerStyle={styles.durationScrollContent}
-            >
-              {DURATIONS.map((days) => {
-                const selected = duration === days;
-                return (
-                  <Pressable
-                    key={days}
-                    onPress={() => setDuration(days)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: selected }}
-                    accessibilityLabel={`${days} days`}
-                    style={[
-                      styles.durationChip,
-                      {
-                        backgroundColor: selected
-                          ? colors.primary
-                          : colors.surface,
-                        borderColor: selected ? colors.primary : colors.border,
-                      },
-                    ]}
-                  >
-                    <AppText
-                      size={15}
-                      weight="bold"
-                      color={selected ? colors.primaryContrast : colors.text}
-                    >
-                      {days}
-                    </AppText>
-                    <AppText
-                      size={11}
-                      weight="medium"
-                      color={selected ? colors.primaryContrast : colors.muted}
-                    >
-                      days
-                    </AppText>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <View style={styles.durationGrid}>
+              {[
+                DURATIONS.slice(0, 2),
+                DURATIONS.slice(2, 4),
+                DURATIONS.slice(4, 6),
+              ].map((row, rowIndex) => (
+                <View key={rowIndex} style={styles.durationRow}>
+                  {row.map((days) => {
+                    const selected = duration === days;
+                    return (
+                      <Pressable
+                        key={days}
+                        onPress={() => setDuration(days)}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: selected }}
+                        accessibilityLabel={`${days} days`}
+                        style={[
+                          styles.durationChip,
+                          {
+                            backgroundColor: selected
+                              ? colors.primary
+                              : colors.surface,
+                          },
+                        ]}
+                      >
+                        <AppText
+                          size={15}
+                          weight="bold"
+                          color={
+                            selected ? colors.primaryContrast : colors.text
+                          }
+                        >
+                          {days}
+                        </AppText>
+                        <AppText
+                          size={11}
+                          weight="medium"
+                          color={
+                            selected ? colors.primaryContrast : colors.muted
+                          }
+                        >
+                          days
+                        </AppText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
           </View>
 
           {/* Save button */}
@@ -218,18 +219,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
-  durationScroll: {
-    marginHorizontal: -16,
+  durationGrid: {
+    gap: 10,
   },
-  durationScrollContent: {
-    paddingHorizontal: 16,
+  durationRow: {
+    flexDirection: "row",
     gap: 10,
   },
   durationChip: {
-    width: 72,
-    height: 80,
+    flex: 1,
+    height: 72,
     borderRadius: radius.lg,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 2,

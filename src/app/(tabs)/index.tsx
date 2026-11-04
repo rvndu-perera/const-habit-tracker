@@ -6,12 +6,19 @@ import { radius, spacing } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
 import { useHabitStore } from "@/store/useHabitStore";
 import { overallProgress } from "@/utils/progress";
-import { useEffect } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DashboardScreen() {
   const colors = useAppColors();
+  const [showReminder, setShowReminder] = useState(false);
   const userName = useHabitStore((s) => s.userName);
   const habits = useHabitStore((s) => s.habits);
   const toggleDay = useHabitStore((s) => s.toggleDay);
@@ -31,10 +38,8 @@ export default function DashboardScreen() {
     }
 
     state.markReminderShown(today);
-    Alert.alert(
-      "A quick check-in",
-      "Take a moment to mark today's habit progress.",
-    );
+    const reminderTimer = setTimeout(() => setShowReminder(true), 0);
+    return () => clearTimeout(reminderTimer);
   }, []);
 
   return (
@@ -92,6 +97,45 @@ export default function DashboardScreen() {
           </View>
         )}
       </ScrollView>
+
+      <Modal
+        transparent
+        visible={showReminder}
+        animationType="fade"
+        onRequestClose={() => setShowReminder(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[
+              styles.reminderCard,
+              { backgroundColor: colors.surface },
+            ]}
+          >
+            <AppText size={18} weight="bold">
+              A quick check-in
+            </AppText>
+            <AppText
+              size={14}
+              color={colors.muted}
+              style={styles.reminderMessage}
+            >
+              Take a moment to mark today&apos;s habit progress.
+            </AppText>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setShowReminder(false)}
+              style={[
+                styles.reminderButton,
+                { backgroundColor: colors.surfaceSecondary },
+              ]}
+            >
+              <AppText size={14} weight="semibold">
+                Got it
+              </AppText>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -134,5 +178,26 @@ const styles = StyleSheet.create({
   },
   cardsList: {
     gap: spacing.md,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    padding: spacing.xl,
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+  },
+  reminderCard: {
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+  },
+  reminderMessage: {
+    lineHeight: 21,
+    marginTop: spacing.sm,
+  },
+  reminderButton: {
+    minHeight: 46,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: radius.md,
+    marginTop: spacing.lg,
   },
 });

@@ -1,16 +1,12 @@
-// Floating pill tab bar
 import { fonts } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
-import { useHabitStore } from "@/store/useHabitStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const TAB_BAR_HEIGHT = 66;
-const TAB_BAR_MARGIN_H = 24;
-const TAB_BAR_BOTTOM_GAP = 14;
+const TAB_BAR_HEIGHT = 64;
+const TAB_BAR_PADDING_TOP = 8;
 
 const TABS: {
   name: string;
@@ -49,115 +45,80 @@ type TabBarProps = {
   navigation: TabNavigation;
 };
 
-// ─── Custom floating tab bar ──────────────────────────────────────────────────
-function FloatingTabBar({ state, navigation }: TabBarProps) {
+function AppTabBar({ state, navigation }: TabBarProps) {
   const colors = useAppColors();
-  const isDark = useHabitStore((s) => s.themeMode) === "dark";
   const insets = useSafeAreaInsets();
 
-  const bottomOffset = Math.max(insets.bottom, 0) + TAB_BAR_BOTTOM_GAP;
-
   return (
-    <View style={[styles.wrapper, { bottom: bottomOffset }]}>
-      {/* Shadow layer (no overflow:hidden so shadow spreads freely) */}
-      <View
-        style={[
-          styles.shadow,
-          {
-            backgroundColor: colors.surface,
-            shadowOpacity: isDark ? 0 : 0.1,
-            borderWidth: isDark ? 1 : 0,
-            borderColor: isDark ? colors.border : "transparent",
-          },
-        ]}
-      >
-        {/* Clip layer — rounds press ripple/backgrounds to pill boundary */}
-        <View style={[styles.bar, { backgroundColor: colors.surface }]}>
-          {state.routes.map((route: Route, index: number) => {
-            const isFocused = state.index === index;
-            const tab = TABS.find((t) => t.name === route.name) ?? TABS[0];
+    <View
+      style={[
+        styles.bar,
+        {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          height: TAB_BAR_HEIGHT + TAB_BAR_PADDING_TOP + insets.bottom,
+          paddingBottom: insets.bottom,
+        },
+      ]}
+    >
+      {state.routes.map((route: Route, index: number) => {
+        const isFocused = state.index === index;
+        const tab = TABS.find((t) => t.name === route.name) ?? TABS[0];
+        const iconColor = isFocused ? colors.primary : colors.muted;
 
-            // Active: primary color. Inactive: muted. Icon stays outline always.
-            const iconColor = isFocused ? colors.primary : colors.muted;
-            const iconName = tab.icon;
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
 
-            const onPress = () => {
-              const event = navigation.emit({
-                type: "tabPress",
-                target: route.key,
-                canPreventDefault: true,
-              });
-              if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name);
-              }
-            };
-
-            return (
-              <Pressable
-                key={route.key}
-                onPress={onPress}
-                style={({ pressed }) => [
-                  styles.tabItem,
-                  pressed && styles.tabItemPressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isFocused }}
-                accessibilityLabel={tab.title}
-              >
-                {/*
-                 * Icon: use `key` so React unmounts/remounts Ionicons
-                 * whenever the name changes — guarantees the filled
-                 * variant renders even if the icon size/color are unchanged.
-                 */}
-                <Ionicons
-                  name={iconName}
-                  size={24}
-                  color={iconColor}
-                />
-                <Text
-                  style={[
-                    styles.label,
-                    {
-                      color: iconColor,
-                      fontFamily: isFocused ? fonts.semibold : fonts.medium,
-                    },
-                  ]}
-                >
-                  {tab.title}
-                </Text>
-
-                {/* Active dot — small pill beneath the label */}
-                <View
-                  style={[
-                    styles.dot,
-                    {
-                      backgroundColor: isFocused
-                        ? colors.primary
-                        : "transparent",
-                    },
-                  ]}
-                />
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            style={({ pressed }) => [
+              styles.tabItem,
+              pressed && styles.tabItemPressed,
+            ]}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isFocused }}
+            accessibilityLabel={tab.title}
+          >
+            <Ionicons name={tab.icon} size={23} color={iconColor} />
+            <Text
+              style={[
+                styles.label,
+                {
+                  color: iconColor,
+                  fontFamily: isFocused ? fonts.semibold : fonts.medium,
+                },
+              ]}
+            >
+              {tab.title}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const appColors = useAppColors();
 
   const sceneBottomPadding =
-    TAB_BAR_HEIGHT + Math.max(insets.bottom, 0) + TAB_BAR_BOTTOM_GAP + 12;
+    TAB_BAR_HEIGHT + TAB_BAR_PADDING_TOP + insets.bottom + 12;
 
   return (
     <Tabs
       tabBar={(props) => (
-        <FloatingTabBar
+        <AppTabBar
           state={props.state}
           navigation={props.navigation as unknown as TabNavigation}
         />
@@ -177,47 +138,26 @@ export default function TabsLayout() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  wrapper: {
-    position: "absolute",
-    left: TAB_BAR_MARGIN_H,
-    right: TAB_BAR_MARGIN_H,
-  },
-  // Shadow host — must NOT have overflow:hidden so shadow spreads out
-  shadow: {
-    borderRadius: 40,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 20,
-    elevation: 12,
-  },
-  // Clip host — overflow:hidden keeps content/ripple within the pill
   bar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: "row",
-    height: TAB_BAR_HEIGHT,
-    borderRadius: 40,
-    overflow: "hidden",
+    paddingTop: TAB_BAR_PADDING_TOP,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   tabItem: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 4,
-    gap: 2,
+    gap: 3,
   },
   tabItemPressed: {
-    opacity: 0.5,
+    opacity: 0.65,
   },
   label: {
-    fontSize: 10,
-    letterSpacing: 0.1,
-  },
-  // Small pill dot — visible only on the active tab
-  dot: {
-    width: 18,
-    height: 3,
-    borderRadius: 2,
-    marginTop: 3,
+    fontSize: 11,
   },
 });

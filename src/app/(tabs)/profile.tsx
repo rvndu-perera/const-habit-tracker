@@ -3,13 +3,17 @@ import { radius, spacing, ThemeMode } from "@/constants/theme";
 import { useAppColors } from "@/hooks/useAppColors";
 import { useHabitStore } from "@/store/useHabitStore";
 import { overallProgress } from "@/utils/progress";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const colors = useAppColors();
+  const router = useRouter();
   const userName = useHabitStore((state) => state.userName);
   const habits = useHabitStore((state) => state.habits);
+  const deleteAccount = useHabitStore((state) => state.deleteAccount);
   const themeMode = useHabitStore((state) => state.themeMode);
   const setThemeMode = useHabitStore((state) => state.setThemeMode);
   const notificationsEnabled = useHabitStore(
@@ -18,6 +22,9 @@ export default function ProfileScreen() {
   const setNotificationsEnabled = useHabitStore(
     (state) => state.setNotificationsEnabled,
   );
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const progress = overallProgress(habits);
   const completedCheckIns = habits.reduce(
     (total, habit) => total + habit.completedDays.length,
@@ -26,6 +33,18 @@ export default function ProfileScreen() {
   const completedHabits = habits.filter(
     (habit) => habit.completedDays.length >= habit.totalDays,
   ).length;
+
+  const handleDeleteAccount = async () => {
+    setDeleteError(null);
+    setDeletingAccount(true);
+    try {
+      await deleteAccount();
+      router.replace("/onboarding");
+    } catch {
+      setDeletingAccount(false);
+      setDeleteError("Your account could not be deleted. Please try again.");
+    }
+  };
 
   return (
     <SafeAreaView
@@ -45,12 +64,7 @@ export default function ProfileScreen() {
           </AppText>
         </View>
 
-        <View
-          style={[
-            styles.summary,
-            { backgroundColor: colors.surface, borderColor: colors.border },
-          ]}
-        >
+        <View style={[styles.summary, { backgroundColor: colors.surface }]}>
           <AppText size={16} weight="semibold" style={styles.sectionTitle}>
             Progress summary
           </AppText>
@@ -64,12 +78,9 @@ export default function ProfileScreen() {
               </AppText>
             </View>
             <View
-              style={[
-                styles.stat,
-                styles.middleStat,
-                { borderColor: colors.border },
-              ]}
-            >
+              style={[styles.statDivider, { backgroundColor: colors.border }]}
+            />
+            <View style={styles.stat}>
               <AppText size={26} weight="bold" color={colors.primary}>
                 {completedCheckIns}
               </AppText>
@@ -77,6 +88,9 @@ export default function ProfileScreen() {
                 Check-ins
               </AppText>
             </View>
+            <View
+              style={[styles.statDivider, { backgroundColor: colors.border }]}
+            />
             <View style={styles.stat}>
               <AppText size={26} weight="bold" color={colors.primary}>
                 {completedHabits}
@@ -86,9 +100,13 @@ export default function ProfileScreen() {
               </AppText>
             </View>
           </View>
+        </View>
 
+        <View
+          style={[styles.progressCard, { backgroundColor: colors.surface }]}
+        >
           <View style={styles.progressHeader}>
-            <AppText size={13} weight="medium">
+            <AppText size={16} weight="semibold">
               Overall progress
             </AppText>
             <AppText size={13} weight="semibold" color={colors.primary}>
@@ -113,10 +131,7 @@ export default function ProfileScreen() {
           </AppText>
 
           <View
-            style={[
-              styles.settingRow,
-              { backgroundColor: colors.surface, borderColor: colors.border },
-            ]}
+            style={[styles.settingRow, { backgroundColor: colors.surface }]}
           >
             <View style={styles.settingCopy}>
               <AppText size={15} weight="semibold">
@@ -136,10 +151,7 @@ export default function ProfileScreen() {
           </View>
 
           <View
-            style={[
-              styles.themePanel,
-              { backgroundColor: colors.surface, borderColor: colors.border },
-            ]}
+            style={[styles.themePanel, { backgroundColor: colors.surface }]}
           >
             <AppText size={15} weight="semibold">
               Theme
@@ -158,16 +170,15 @@ export default function ProfileScreen() {
                       styles.themeOption,
                       {
                         backgroundColor: selected
-                          ? colors.primarySoft
-                          : colors.surface,
-                        borderColor: selected ? colors.primary : colors.border,
+                          ? colors.primary
+                          : colors.surfaceSecondary,
                       },
                     ]}
                   >
                     <AppText
                       size={14}
                       weight="semibold"
-                      color={selected ? colors.primary : colors.text}
+                      color={selected ? colors.primaryContrast : colors.text}
                     >
                       {mode === "light" ? "Light" : "Dark"}
                     </AppText>
@@ -176,6 +187,76 @@ export default function ProfileScreen() {
               })}
             </View>
           </View>
+        </View>
+
+        <View style={styles.dangerSection}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {
+              setDeleteError(null);
+              setConfirmingDelete(true);
+            }}
+            style={styles.deleteOption}
+          >
+            <AppText size={15} weight="semibold" color="#B42318">
+              Delete account
+            </AppText>
+            <AppText size={12} color={colors.muted}>
+              Permanently remove your profile and saved habits.
+            </AppText>
+          </Pressable>
+
+          {confirmingDelete && (
+            <View
+              style={[
+                styles.deleteConfirmation,
+                { backgroundColor: colors.surface },
+              ]}
+            >
+              <AppText size={15} weight="semibold">
+                Permanently delete your account?
+              </AppText>
+              <AppText size={13} color={colors.muted}>
+                Your profile, habits, and settings will be erased from this
+                device. This cannot be undone.
+              </AppText>
+              {deleteError && (
+                <AppText size={13} color="#B42318">
+                  {deleteError}
+                </AppText>
+              )}
+              <View style={styles.deleteActions}>
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={deletingAccount}
+                  onPress={() => setConfirmingDelete(false)}
+                  style={[
+                    styles.deleteAction,
+                    { backgroundColor: colors.surfaceSecondary },
+                    deletingAccount && styles.disabledAction,
+                  ]}
+                >
+                  <AppText size={14} weight="semibold">
+                    Cancel
+                  </AppText>
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={deletingAccount}
+                  onPress={handleDeleteAccount}
+                  style={[
+                    styles.deleteAction,
+                    styles.confirmDeleteButton,
+                    deletingAccount && styles.disabledAction,
+                  ]}
+                >
+                  <AppText size={14} weight="semibold" color="#FFFFFF">
+                    {deletingAccount ? "Deleting..." : "Delete permanently"}
+                  </AppText>
+                </Pressable>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -198,8 +279,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   summary: {
-    borderWidth: 1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     padding: spacing.md,
   },
   sectionTitle: {
@@ -207,19 +287,25 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: "row",
-    marginBottom: spacing.lg,
+    alignItems: "stretch",
   },
   stat: {
     flex: 1,
     alignItems: "center",
   },
-  middleStat: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+  statDivider: {
+    width: 1,
+    marginVertical: spacing.xs,
+  },
+  progressCard: {
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginTop: spacing.md,
   },
   progressHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: spacing.sm,
   },
   progressTrack: {
@@ -238,8 +324,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderWidth: 1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
   },
@@ -249,8 +334,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   themePanel: {
-    borderWidth: 1,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     padding: spacing.md,
   },
   themeOptions: {
@@ -263,7 +347,38 @@ const styles = StyleSheet.create({
     minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
     borderRadius: radius.sm,
+  },
+  dangerSection: {
+    marginTop: spacing.xl,
+  },
+  deleteOption: {
+    gap: spacing.xs,
+    paddingVertical: spacing.sm,
+  },
+  deleteConfirmation: {
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginTop: spacing.sm,
+    gap: spacing.md,
+  },
+  deleteActions: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  deleteAction: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.sm,
+  },
+  confirmDeleteButton: {
+    backgroundColor: "#B42318",
+  },
+  disabledAction: {
+    opacity: 0.6,
   },
 });

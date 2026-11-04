@@ -15,6 +15,7 @@ type State = {
   setThemeMode: (mode: ThemeMode) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   markReminderShown: (date: string) => void;
+  deleteAccount: () => Promise<void>;
   addHabit: (name: string, totalDays: TotalDays) => void;
   toggleDay: (id: string, day: number) => void;
   deleteHabit: (id: string) => void;
@@ -34,6 +35,16 @@ export const useHabitStore = create<State>()(
       setNotificationsEnabled: (notificationsEnabled) =>
         set({ notificationsEnabled }),
       markReminderShown: (lastReminderDate) => set({ lastReminderDate }),
+      deleteAccount: async () => {
+        await AsyncStorage.removeItem("habit-tracker-storage");
+        set({
+          userName: null,
+          habits: [],
+          themeMode: "light",
+          notificationsEnabled: false,
+          lastReminderDate: null,
+        });
+      },
       addHabit: (name, totalDays) =>
         set((s) => ({
           habits: [

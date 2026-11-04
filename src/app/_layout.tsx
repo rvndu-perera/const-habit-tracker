@@ -8,6 +8,7 @@ import {
     useFonts,
 } from "@expo-google-fonts/plus-jakarta-sans";
 import { Stack, useRouter, useSegments } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -53,7 +54,7 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
       <Stack
         screenOptions={{
@@ -61,6 +62,6 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: appColors.bg },
         }}
       />
-    </>
+    </GestureHandlerRootView>
   );
 }
