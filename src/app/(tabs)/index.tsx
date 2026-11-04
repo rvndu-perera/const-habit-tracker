@@ -21,6 +21,7 @@ export default function DashboardScreen() {
   const [showReminder, setShowReminder] = useState(false);
   const userName = useHabitStore((s) => s.userName);
   const habits = useHabitStore((s) => s.habits);
+  const hydrated = useHabitStore((s) => s.hydrated);
   const toggleDay = useHabitStore((s) => s.toggleDay);
   const deleteHabit = useHabitStore((s) => s.deleteHabit);
 
@@ -50,53 +51,133 @@ export default function DashboardScreen() {
       {/* Sticky Header Card with floating soft shadow */}
       <View style={styles.headerWrapper}>
         <View style={[styles.headerCard, { backgroundColor: colors.surface }]}>
-          <View>
-            <AppText
-              size={14}
-              color={colors.muted}
-              weight="medium"
-              style={styles.welcomeText}
-            >
-              Welcome back
-            </AppText>
-            <AppText
-              size={30}
-              weight="bold"
-              color={colors.text}
-              style={styles.userNameText}
-            >
-              {userName || "Your habits"}
-            </AppText>
-          </View>
+          {hydrated ? (
+            <>
+              <View>
+                <AppText
+                  size={14}
+                  color={colors.muted}
+                  weight="medium"
+                  style={styles.welcomeText}
+                >
+                  Welcome back
+                </AppText>
+                <AppText
+                  size={30}
+                  weight="bold"
+                  color={colors.text}
+                  style={styles.userNameText}
+                >
+                  {userName || "Your habits"}
+                </AppText>
+              </View>
 
-          <ProgressRing progress={overallProgress(habits)} size={52} />
+              <ProgressRing progress={overallProgress(habits)} size={52} />
+            </>
+          ) : (
+            <>
+              <View>
+                <View
+                  style={[
+                    styles.skeletonWelcome,
+                    { backgroundColor: colors.surfaceSecondary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.skeletonName,
+                    { backgroundColor: colors.surfaceSecondary },
+                  ]}
+                />
+              </View>
+              <View
+                style={[
+                  styles.skeletonProgress,
+                  { backgroundColor: colors.surfaceSecondary },
+                ]}
+              />
+            </>
+          )}
         </View>
       </View>
 
       {/* Scrollable Habit Cards */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {habits.length === 0 ? (
-          <EmptyState
-            title="No habits yet"
-            message="Create your first habit from the Create tab and start tracking your streak."
-          />
-        ) : (
-          <View style={styles.cardsList}>
-            {habits.map((habit) => (
-              <HabitCard
-                key={habit.id}
-                habit={habit}
-                onToggleDay={(day) => toggleDay(habit.id, day)}
-                onDelete={() => deleteHabit(habit.id)}
+      {hydrated ? (
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {habits.length === 0 ? (
+            <EmptyState
+              title="No habits yet"
+              message="Create your first habit from the Create tab and start tracking your streak."
+            />
+          ) : (
+            <View style={styles.cardsList}>
+              {habits.map((habit) => (
+                <HabitCard
+                  key={habit.id}
+                  habit={habit}
+                  onToggleDay={(day) => toggleDay(habit.id, day)}
+                  onDelete={() => deleteHabit(habit.id)}
+                />
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      ) : (
+        <View
+          style={[styles.scrollView, styles.loadingContainer]}
+          accessible
+          accessibilityLabel="Loading habits"
+        >
+          {[0, 1].map((item) => (
+            <View
+              key={item}
+              style={[styles.skeletonCard, { backgroundColor: colors.surface }]}
+            >
+              <View
+                style={[
+                  styles.skeletonHabitTitle,
+                  { backgroundColor: colors.surfaceSecondary },
+                ]}
               />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+              <View
+                style={[
+                  styles.skeletonHabitSubtitle,
+                  { backgroundColor: colors.surfaceSecondary },
+                ]}
+              />
+              <View style={styles.skeletonMetaRow}>
+                <View
+                  style={[
+                    styles.skeletonMeta,
+                    { backgroundColor: colors.surfaceSecondary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.skeletonMeta,
+                    { backgroundColor: colors.surfaceSecondary },
+                  ]}
+                />
+              </View>
+              <View style={styles.skeletonDays}>
+                {[0, 1, 2, 3, 4, 5, 6].map((day) => (
+                  <View
+                    key={day}
+                    style={[
+                      styles.skeletonDay,
+                      { backgroundColor: colors.surfaceSecondary },
+                    ]}
+                  />
+                ))}
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
 
       <Modal
         transparent
@@ -172,12 +253,69 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
+    flexGrow: 1,
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 32,
+    paddingBottom: 16,
   },
   cardsList: {
     gap: spacing.md,
+  },
+  loadingContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    gap: spacing.md,
+  },
+  skeletonWelcome: {
+    width: 96,
+    height: 12,
+    borderRadius: radius.full,
+    marginBottom: 8,
+  },
+  skeletonName: {
+    width: 148,
+    height: 24,
+    borderRadius: radius.full,
+  },
+  skeletonProgress: {
+    width: 52,
+    height: 52,
+    borderRadius: radius.full,
+  },
+  skeletonCard: {
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+  },
+  skeletonHabitTitle: {
+    width: "58%",
+    height: 18,
+    borderRadius: radius.full,
+  },
+  skeletonHabitSubtitle: {
+    width: 76,
+    height: 12,
+    borderRadius: radius.full,
+    marginTop: 8,
+  },
+  skeletonMetaRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 18,
+    marginBottom: 14,
+  },
+  skeletonMeta: {
+    width: 72,
+    height: 13,
+    borderRadius: radius.full,
+  },
+  skeletonDays: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  skeletonDay: {
+    width: 28,
+    height: 28,
+    borderRadius: radius.sm,
   },
   modalOverlay: {
     flex: 1,
