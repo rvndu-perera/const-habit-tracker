@@ -121,7 +121,7 @@ export default function OnboardingScreen() {
                   shadowOffset: { width: 0, height: 12 },
                   shadowOpacity: isDark ? 0 : 0.045,
                   shadowRadius: 30,
-                  elevation: 100,
+                  elevation: isDark ? 0 : 3,
                 },
               ]}
             >
