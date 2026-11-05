@@ -251,7 +251,7 @@ export default function ProfileScreen() {
                   ]}
                 >
                   <AppText size={14} weight="semibold" color="#FFFFFF">
-                    {deletingAccount ? "Deleting..." : "Delete permanently"}
+                    {deletingAccount ? "Deleting..." : "Delete"}
                   </AppText>
                 </Pressable>
               </View>
