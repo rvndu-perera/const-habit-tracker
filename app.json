@@ -4,18 +4,18 @@
     "slug": "habitrack",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon.png",
+    "icon": "./assets/images/logo-habitrack.png",
     "scheme": "habittracker",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/images/app-icon.png",
+      "icon": "./assets/images/logo-habitrack.png",
       "bundleIdentifier": "com.habittracker.app"
     },
     "android": {
       "package": "com.habittracker.app",
       "adaptiveIcon": {
         "backgroundColor": "#000000",
-        "foregroundImage": "./assets/images/app-icon.png"
+        "foregroundImage": "./assets/images/logo-habitrack.png"
       },
       "predictiveBackGestureEnabled": false
     },
@@ -29,7 +29,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#000000",
-          "image": "./assets/images/app-icon.png",
+          "image": "./assets/images/logo-habitrack.png",
           "imageWidth": 80
         }
       ],
@@ -38,6 +38,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e3eb7c13-431a-4c8f-86c6-5ad1bdc8ee68"
+      }
     }
   }
 }

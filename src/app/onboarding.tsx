@@ -92,7 +92,7 @@ export default function OnboardingScreen() {
                 ]}
               >
                 <Image
-                  source={require("@/../assets/images/logo.png")}
+                  source={require("@/../assets/images/logo-habitrack.png")}
                   style={styles.logoImage}
                   resizeMode="cover"
                 />
