@@ -1,14 +1,15 @@
 {
   "expo": {
     "name": "HabiTrack",
-    "slug": "HabiTrack",
+    "slug": "habitrack",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/app-icon.png",
     "scheme": "habittracker",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/app-icon.png",
+      "bundleIdentifier": "com.habittracker.app"
     },
     "android": {
       "package": "com.habittracker.app",
