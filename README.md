@@ -8,7 +8,7 @@ A minimalist, privacy-first habit tracking application built with React Native a
 
 Direct download for Android devices:
 
-- **[Download Latest APK](https://github.com/your-username/habit-tracker/releases/latest/download/habitrack.apk)** *(Replace with your actual hosted link or GitHub Release URL)*
+- **[Download Latest APK](https://expo.dev/accounts/rvndu/projects/habitrack/builds/281f586e-dfbd-4cf5-a184-03762d12eef7)**
 
 > **Installation Note**: When installing outside the Google Play Store, Android will request permission to install unknown apps. Tap **Settings** and enable **Allow from this source** to proceed.
 
@@ -35,16 +35,16 @@ HabiTrack focuses on clarity and consistency. Instead of overwhelming charts and
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [React Native 0.86](https://reactnative.dev/) / [Expo SDK 57](https://expo.dev/) |
-| Routing | [Expo Router](https://docs.expo.dev/router/introduction/) (file-based navigation) |
-| Language | [TypeScript](https://www.typescriptlang.org/) (strict mode) |
-| State Management | [Zustand](https://github.com/pmndrs/zustand) with `persist` middleware |
-| Local Storage | [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage) |
-| Animations | [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) & [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/) |
-| Vectors & Graphics | [React Native SVG](https://github.com/software-mansion/react-native-svg) & [@expo/vector-icons](https://icons.expo.fyi/) |
-| Typography | [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) via `@expo-google-fonts` |
+| Layer              | Technology                                                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Framework          | [React Native 0.86](https://reactnative.dev/) / [Expo SDK 57](https://expo.dev/)                                                                             |
+| Routing            | [Expo Router](https://docs.expo.dev/router/introduction/) (file-based navigation)                                                                            |
+| Language           | [TypeScript](https://www.typescriptlang.org/) (strict mode)                                                                                                  |
+| State Management   | [Zustand](https://github.com/pmndrs/zustand) with `persist` middleware                                                                                       |
+| Local Storage      | [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage)                                                     |
+| Animations         | [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/) & [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/) |
+| Vectors & Graphics | [React Native SVG](https://github.com/software-mansion/react-native-svg) & [@expo/vector-icons](https://icons.expo.fyi/)                                     |
+| Typography         | [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) via `@expo-google-fonts`                                                            |
 
 ---
 
@@ -97,17 +97,20 @@ habit-tracker/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/habit-tracker.git
    cd habit-tracker
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npx expo start
    ```
@@ -124,11 +127,13 @@ habit-tracker/
 The project is pre-configured with [EAS Build](https://docs.expo.dev/build/introduction/) to compile standalone `.apk` files without needing Android Studio or local toolchains installed.
 
 1. Install EAS CLI globally or use via `npx`:
+
    ```bash
    npx eas-cli login
    ```
 
 2. Trigger the preview build:
+
    ```bash
    npx eas-cli build -p android --profile preview
    ```
