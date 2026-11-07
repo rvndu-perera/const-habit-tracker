@@ -1,5 +1,9 @@
 # HabiTrack
 
+<p align="center">
+  <img src="assets/images/logo-habitrack.png" alt="HabiTrack logo" width="160" />
+</p>
+
 A minimalist, privacy-first habit tracking application built with React Native and Expo. Designed with a monochrome aesthetic, fluid micro-interactions, and offline-first persistence.
 
 ---
@@ -17,6 +21,14 @@ Direct download for Android devices:
 ## Overview
 
 HabiTrack focuses on clarity and consistency. Instead of overwhelming charts and complex gamification, it provides a clean visual matrix of your progress across custom focus periods (7, 14, 21, 30, 60, or 90 days). All data is stored locally on the device with zero cloud dependencies or account requirements.
+
+---
+
+## App Screenshots
+
+| Dashboard | Create a Habit | Profile |
+|:---:|:---:|:---:|
+| <img src="assets/images/ui1.png" alt="HabiTrack dashboard showing habit progress" width="240" /> | <img src="assets/images/ui2.png" alt="HabiTrack create-habit screen" width="240" /> | <img src="assets/images/ui3.png" alt="HabiTrack profile, progress, and settings screen" width="240" /> |
 
 ---
 
